@@ -1,0 +1,13 @@
+{
+  "vm_folder": "path_to_folder_eg_Templates/packer_uploads",
+  "disk_mode": "thick_or_thin",
+  "disk_size": "disksize_in_MB",
+  "memsize": "memorysize_in_MB",
+  "numvcpus": "number_of_sockets",
+  "cluster": "cluster_name",
+  "portgroup": "portgroup_name",
+  "datastore": "datastore_name",
+  "datacenter": "datacenter_name",
+  "vcenter": "fqdn_of_vcenter",
+  "vcenter_username": "username@mydomain.com"
+}
