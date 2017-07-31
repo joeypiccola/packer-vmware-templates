@@ -89,7 +89,7 @@ $cred = bettercredentials\Get-Credential -UserName 'vCenterServiceAccount@mydoma
 $password = $cred.GetNetworkCredential().Password
 $env:Packer_LOG=1
 $env:Packer_LOG_PATH="C:\Packer_logs\Packerlog_2008r2_$(get-date -Format MM-dd-yy-HHmmss).txt"
-$server08r2 = Start-Process -FilePath 'Packer.exe' -ArgumentList "build  -force -var-file=`".\variables-global.json`" -var 'name=Template2008r2' -var `"vcenter_password=$password`" .\vsphere-2008r2.json" -WindowStyle Normal -Wait -PassThru
+$server08r2 = Start-Process -FilePath 'Packer.exe' -ArgumentList "build  -force -var-file=`".\variables-global.json`" -var `"name=Template2008r2`" -var `"vcenter_password=$password`" .\vsphere-2008r2.json" -WindowStyle Normal -Wait -PassThru
 
 if ($server08r2.ExitCode -eq 0)
 {
