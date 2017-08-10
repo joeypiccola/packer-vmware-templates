@@ -16,3 +16,4 @@ var_scratch.json
 /Template-08R2/
 /Template-12R2/
 build.ps1
+/scripts/Get-DeployScripts.ps1
