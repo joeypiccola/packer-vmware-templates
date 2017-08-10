@@ -17,3 +17,5 @@ var_scratch.json
 /Template-12R2/
 build.ps1
 /scripts/Get-DeployScripts.ps1
+vsphere-2008r2.json
+vsphere-2012r2.json
