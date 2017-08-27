@@ -65,7 +65,7 @@ Clone this repo, install the prerequisites, edit the variables-global-template.j
 
 ### Prerequisites
 
-Begin by installing Packer and the Packer provisioner [Packer-provisioner-windows-update](https://github.com/rgl/Packer-provisioner-windows-update) via [Chocolatey](https://chocolatey.org/). You will also need [VMware Workstation](https://www.vmware.com/products/workstation.html). VMware Workstation provides the Packer builder [vmware](https://www.Packer.io/docs/builders/vmware.html). The Packer builder vmware is the only builder that can produce an artifact that the vsphere post-processor can handle. The vsphere post-processor requires the OVFTool, ensure it's in your path ```C:\Program Files (x86)\VMware\VMware Workstation\OVFTool```.
+Begin by installing Packer and the Packer provisioner [Packer-provisioner-windows-update](https://github.com/rgl/Packer-provisioner-windows-update) via [Chocolatey](https://chocolatey.org/). You will also need [VMware Workstation](https://www.vmware.com/products/workstation.html). VMware Workstation provides the Packer builder [vmware](https://www.Packer.io/docs/builders/vmware.html). The Packer builder vmware is the only builder that can produce an artifact that the vsphere post-processor can handle. The vsphere post-processor requires the OVFTool, ensure it's in your path ```C:\Program Files\VMware\VMware OVF Tool``` and you're on the latest version.
 
 ```cmd
 choco install Packer, Packer-provisioner-windows-update -y
