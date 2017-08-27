@@ -15,6 +15,7 @@ variables-global.json
 var_scratch.json
 /Template-08R2/
 /Template-12R2/
+/Template-16/
 build.ps1
 /scripts/Get-DeployScripts.ps1
 vsphere-2008r2.json
