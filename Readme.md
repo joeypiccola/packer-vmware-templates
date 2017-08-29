@@ -19,7 +19,7 @@
 
 # Packer Generated VMware Templates
 
-[Packer](https://www.Packer.io/) templates that can be used to create Windows virtual machine templates in VMware. As is, these templates will create a fully patched system with VMware Tools installed running PowerShell Version 5 for Windows Server 2008 R2 and 2012 R2. These Packer templates intentionally create vanilla systems.
+[Packer](https://www.Packer.io/) templates that can be used to create Windows virtual machine templates in VMware. As is, these templates will create a fully patched system with VMware Tools installed running PowerShell Version 5 for Windows Server 2008 R2 Standard, 2012 R2 Standard and 2016 Standard. These Packer templates intentionally create vanilla systems.
 
 ## Use case
 
