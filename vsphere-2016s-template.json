@@ -1,96 +1,92 @@
 {
-  "builders": [
-    {
-    "type": "vmware-iso",
-      "vm_name": "{{ user `name` }}",
-      "vmdk_name": "{{ user `name` }}",
-      "output_directory": "{{ user `name` }}",
-      "iso_url": "{{ user `iso_url_retail` }}",
-      "iso_checksum": "{{ user `iso_checksum_retail` }}",
-      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
-      "communicator": "winrm",
-      "winrm_username": "vagrant",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "12h",
-      "winrm_port": "5985",
-      "vnc_port_min": 5900,
-      "vnc_port_max": 5980,      
-      "shutdown_command": "a:/Start-Shutdown.bat",
-      "shutdown_timeout": "15m",
-      "headless": "false",
-      "guest_os_type": "{{ user `guest_os_type` }}",
-      "disk_size": "{{ user `disk_size` }}",
-      "floppy_files": [
-        "answer_files/2016/Autounattend.xml",
-        "scripts/Set-WinRM.ps1",
-        "scripts/Start-Shutdown.bat"
-      ],
-      "vmx_data": {
-        "memsize": "{{ user `memsize` }}",
-        "numvcpus": "{{ user `numvcpus` }}",
-        "scsi0.virtualDev": "lsisas1068",
-        "RemoteDisplay.vnc.enabled": "false",
-        "RemoteDisplay.vnc.port": "5900"
-      }          
+    "builders": [
+        {
+            "type": "vmware-iso",
+            "vm_name": "{{ user `name` }}",
+            "vmdk_name": "{{ user `name` }}",
+            "output_directory": "{{ user `name` }}",
+            "iso_url": "{{ user `iso_url_retail` }}",
+            "iso_checksum": "{{ user `iso_checksum_retail` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "communicator": "winrm",
+            "winrm_username": "vagrant",
+            "winrm_password": "vagrant",
+            "winrm_timeout": "12h",
+            "winrm_port": "5985",
+            "vnc_port_min": 5900,
+            "vnc_port_max": 5980,
+            "shutdown_command": "a:/Start-Shutdown.bat",
+            "shutdown_timeout": "15m",
+            "headless": "false",
+            "guest_os_type": "{{ user `guest_os_type` }}",
+            "disk_size": "{{ user `disk_size` }}",
+            "floppy_files": [
+                "answer_files/2016/Autounattend.xml",
+                "scripts/Set-WinRM.ps1",
+                "scripts/Start-Shutdown.bat"
+            ],
+            "vmx_data": {
+                "memsize": "{{ user `memsize` }}",
+                "numvcpus": "{{ user `numvcpus` }}",
+                "scsi0.virtualDev": "lsisas1068",
+                "RemoteDisplay.vnc.enabled": "false",
+                "RemoteDisplay.vnc.port": "5900"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Install-VMwareTools.ps1"
+            ]
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "windows-update",
+            "update_limit": "50"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Remove-UpdateCache.ps1",
+                "scripts/Invoke-Defrag.ps1",
+                "scripts/Reset-EmptySpace.ps1"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vsphere",
+            "cluster": "{{ user `cluster` }}",
+            "datacenter": "{{ user `datacenter` }}",
+            "datastore": "{{ user `datastore` }}",
+            "host": "{{ user `vcenter` }}",
+            "username": "{{ user `vcenter_username` }}",
+            "password": "{{ user `vcenter_password` }}",
+            "vm_name": "{{ user `name` }}",
+            "disk_mode": "{{ user `disk_mode` }}",
+            "vm_network": "{{ user `portgroup` }}",
+            "vm_folder": "{{ user `vm_folder` }}",
+            "resource_pool": "",
+            "overwrite": "true",
+            "options": [
+                "--noSSLVerify"
+            ]
+        }
+    ],
+    "variables": {
+        "guest_os_type": "windows8srv-64",
+        "iso_checksum_retail": "F185197AF68FAE4F0E06510A4579FC511BA27616",
+        "iso_url_retail": "file:/\\\\\\box\\s$\\applications\\isos\\windows\\2016\\en_windows_server_2016_x64_dvd_9718492.iso",
+        "iso_checksum_eval": "3BB1C60417E9AEB3F4CE0EB02189C0C84A1C6691",
+        "iso_url_eval": "http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO",
+        "iso_checksum_type": "sha1"
     }
-  ],
-  "provisioners": [
-   {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "scripts": [
-        "scripts/Install-VMwareTools.ps1"  
-      ]
-    }
-    ,
-    {
-      "type": "windows-restart"
-    }
-    ,
-    {
-      "type": "windows-update",
-      "update_limit": "50"
-    }
-    ,
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",      
-      "scripts": [
-        "scripts/Remove-UpdateCache.ps1",
-        "scripts/Invoke-Defrag.ps1",
-        "scripts/Reset-EmptySpace.ps1"
-      ]
-    }        
-  ],
-  "post-processors": [
-    {
-    "type": "vsphere",
-    "cluster": "{{ user `cluster` }}",
-    "datacenter": "{{ user `datacenter` }}",
-    "datastore": "{{ user `datastore` }}",
-    "host": "{{ user `vcenter` }}",
-    "username": "{{ user `vcenter_username` }}",
-    "password": "{{ user `vcenter_password` }}",
-    "vm_name": "{{ user `name` }}",
-    "disk_mode": "{{ user `disk_mode` }}",
-    "vm_network": "{{ user `portgroup` }}",
-    "vm_folder": "{{ user `vm_folder` }}",
-    "resource_pool": "",
-    "overwrite": "true",
-    "options": [
-      "--noSSLVerify"
-    ]
-    }
-  ]
-  ,
-  "variables": {
-    "guest_os_type": "windows8srv-64",  
-    "iso_checksum_retail": "F185197AF68FAE4F0E06510A4579FC511BA27616",
-    "iso_url_retail": "file:/\\\\\\box\\s$\\applications\\isos\\windows\\2016\\en_windows_server_2016_x64_dvd_9718492.iso",
-    "iso_checksum_eval": "3BB1C60417E9AEB3F4CE0EB02189C0C84A1C6691",
-    "iso_url_eval": "http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO",
-    "iso_checksum_type": "sha1"
-  }
 }

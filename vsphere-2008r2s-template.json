@@ -1,121 +1,114 @@
 {
-  "builders": [
-    {
-    "type": "vmware-iso",
-      "vm_name": "{{ user `name` }}",
-      "vmdk_name": "{{ user `name` }}",
-      "output_directory": "{{ user `name` }}",
-      "iso_url": "{{ user `iso_url_retail` }}",
-      "iso_checksum": "{{ user `iso_checksum_retail` }}",
-      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
-      "communicator": "winrm",
-      "winrm_username": "vagrant",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "12h",
-      "winrm_port": "5985",
-      "vnc_port_min": 5900,
-      "vnc_port_max": 5980,      
-      "shutdown_command": "a:/Start-Shutdown.bat",
-      "shutdown_timeout": "15m",
-      "headless": "false",
-      "guest_os_type": "{{ user `guest_os_type` }}",
-      "disk_size": "{{ user `disk_size` }}",      
-      "floppy_files": [
-        "answer_files/2008_r2/Autounattend.xml",
-        "scripts/Set-WinRM.ps1",
-        "scripts/Start-Shutdown.bat"
-      ],
-      "vmx_data": {
-        "memsize": "{{ user `memsize` }}",
-        "numvcpus": "{{ user `numvcpus` }}",
-        "scsi0.virtualDev": "lsisas1068",
-        "RemoteDisplay.vnc.enabled": "false",
-        "RemoteDisplay.vnc.port": "5900"
-      }          
+    "builders": [
+        {
+            "type": "vmware-iso",
+            "vm_name": "{{ user `name` }}",
+            "vmdk_name": "{{ user `name` }}",
+            "output_directory": "{{ user `name` }}",
+            "iso_url": "{{ user `iso_url_retail` }}",
+            "iso_checksum": "{{ user `iso_checksum_retail` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "communicator": "winrm",
+            "winrm_username": "vagrant",
+            "winrm_password": "vagrant",
+            "winrm_timeout": "12h",
+            "winrm_port": "5985",
+            "vnc_port_min": 5900,
+            "vnc_port_max": 5980,
+            "shutdown_command": "a:/Start-Shutdown.bat",
+            "shutdown_timeout": "15m",
+            "headless": "false",
+            "guest_os_type": "{{ user `guest_os_type` }}",
+            "disk_size": "{{ user `disk_size` }}",
+            "floppy_files": [
+                "answer_files/2008_r2/Autounattend.xml",
+                "scripts/Set-WinRM.ps1",
+                "scripts/Start-Shutdown.bat"
+            ],
+            "vmx_data": {
+                "memsize": "{{ user `memsize` }}",
+                "numvcpus": "{{ user `numvcpus` }}",
+                "scsi0.virtualDev": "lsisas1068",
+                "RemoteDisplay.vnc.enabled": "false",
+                "RemoteDisplay.vnc.port": "5900"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Install-VMwareTools.ps1",
+                "scripts/Install-Net461.ps1",
+                "scripts/Install-WMF4.ps1"
+            ]
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Install-WMF5.ps1"
+            ]
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Install-Nuget.ps1",
+                "scripts/Set-WMF5SysPrepRegFix.ps1"
+            ]
+        },
+        {
+            "type": "windows-update",
+            "update_limit": "50"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Remove-UpdateCache.ps1",
+                "scripts/Invoke-Defrag.ps1",
+                "scripts/Reset-EmptySpace.ps1"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vsphere",
+            "cluster": "{{ user `cluster` }}",
+            "datacenter": "{{ user `datacenter` }}",
+            "datastore": "{{ user `datastore` }}",
+            "host": "{{ user `vcenter` }}",
+            "username": "{{ user `vcenter_username` }}",
+            "password": "{{ user `vcenter_password` }}",
+            "vm_name": "{{ user `name` }}",
+            "disk_mode": "{{ user `disk_mode` }}",
+            "vm_network": "{{ user `portgroup` }}",
+            "vm_folder": "{{ user `vm_folder` }}",
+            "resource_pool": "",
+            "overwrite": "true",
+            "options": [
+                "--noSSLVerify"
+            ]
+        }
+    ],
+    "variables": {
+        "guest_os_type": "windows7srv-64",
+        "iso_checksum_retail": "7E7E9425041B3328CCF723A0855C2BC4F462EC57",
+        "iso_url_retail": "file:/\\\\\\box\\s$\\applications\\isos\\windows\\2008r2\\windows_server_2008_r2_web_std_ent_dc_x64_with_sp1.iso",
+        "iso_checksum_eval": "BEED231A34E90E1DD9A04B3AFABEC31D62CE3889",
+        "iso_url_eval": "http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
+        "iso_checksum_type": "sha1"
     }
-  ],
-  "provisioners": [
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "scripts": [
-        "scripts/Install-VMwareTools.ps1",
-        "scripts/Install-Net461.ps1",
-        "scripts/Install-WMF4.ps1"
-      ]      
-    }
-    ,
-    {
-      "type": "windows-restart"
-    }   
-    ,
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "scripts": [
-        "scripts/Install-WMF5.ps1"
-      ]
-    }
-    ,
-    {
-      "type": "windows-restart"
-    }
-    ,
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",      
-      "scripts": [
-        "scripts/Install-Nuget.ps1",
-        "scripts/Set-WMF5SysPrepRegFix.ps1"
-      ]
-    }
-    ,
-    {
-      "type": "windows-update",
-      "update_limit": "50"
-    }
-    ,
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",      
-      "scripts": [
-        "scripts/Remove-UpdateCache.ps1",
-        "scripts/Invoke-Defrag.ps1",
-        "scripts/Reset-EmptySpace.ps1"
-      ]
-    }
-  ],
-  "post-processors": [
-    {
-    "type": "vsphere",
-    "cluster": "{{ user `cluster` }}",
-    "datacenter": "{{ user `datacenter` }}",
-    "datastore": "{{ user `datastore` }}",
-    "host": "{{ user `vcenter` }}",
-    "username": "{{ user `vcenter_username` }}",
-    "password": "{{ user `vcenter_password` }}",
-    "vm_name": "{{ user `name` }}",
-    "disk_mode": "{{ user `disk_mode` }}",
-    "vm_network": "{{ user `portgroup` }}",
-    "vm_folder": "{{ user `vm_folder` }}",
-    "resource_pool": "",
-    "overwrite": "true",
-    "options": [
-      "--noSSLVerify"
-    ]
-    }
-  ]
-  ,
-  "variables": {
-    "guest_os_type": "windows7srv-64",
-    "iso_checksum_retail": "7E7E9425041B3328CCF723A0855C2BC4F462EC57",
-    "iso_url_retail": "file:/\\\\\\box\\s$\\applications\\isos\\windows\\2008r2\\windows_server_2008_r2_web_std_ent_dc_x64_with_sp1.iso",
-    "iso_checksum_eval": "BEED231A34E90E1DD9A04B3AFABEC31D62CE3889",
-    "iso_url_eval": "http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
-    "iso_checksum_type": "sha1"
-  }
 }
