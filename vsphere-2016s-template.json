@@ -55,6 +55,7 @@
             "elevated_user": "vagrant",
             "elevated_password": "vagrant",
             "scripts": [
+                "scripts/Install-Nuget.ps1",
                 "scripts/Remove-UpdateCache.ps1",
                 "scripts/Invoke-Defrag.ps1",
                 "scripts/Reset-EmptySpace.ps1"
