@@ -1,0 +1,1 @@
+ cinst puppet-agent, ruby, git -y

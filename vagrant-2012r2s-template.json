@@ -1,0 +1,99 @@
+{
+    "builders": [
+        {
+            "type": "virtualbox-iso",
+            "vboxmanage": [
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--memory",
+                    "2048"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--cpus",
+                    "2"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--vram",
+                    "64"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--audio",
+                    "none"
+                ]
+            ],
+            "vm_name": "{{ user `name` }}",
+            "guest_additions_mode": "attach",
+            "output_directory": "{{ user `name` }}",
+            "iso_url": "{{ user `iso_url_retail` }}",
+            "iso_checksum": "{{ user `iso_checksum_retail` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "communicator": "winrm",
+            "winrm_username": "vagrant",
+            "winrm_password": "vagrant",
+            "winrm_timeout": "12h",
+            "winrm_port": "5985",
+            "shutdown_command": "a:/Start-Shutdown.bat",
+            "shutdown_timeout": "15m",
+            "headless": "false",
+            "guest_os_type": "{{ user `guest_os_type` }}",
+            "disk_size": "{{ user `disk_size` }}",
+            "floppy_files": [
+                "answer_files/2012_r2/Autounattend.xml",
+                "scripts/Set-WinRM.ps1",
+                "scripts/Start-Shutdown.bat"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Install-VBoxGA.ps1",
+                "scripts/Install-Net35.ps1",
+                "scripts/Install-WMF5.ps1"
+            ]
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "scripts/Install-Nuget.ps1",
+                "scripts/Set-WMF5SysPrepRegFix.ps1",
+                "scripts/Install-Chocolatey.ps1",
+                "scripts/Install-ChocolateyApps.ps1",
+                "scripts/Install-RubyApps.ps1"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "keep_input_artifact": true,
+            "output": "jpacker-2012r2-{{.Provider}}.box",
+            "vagrantfile_template": "vagrantfile.template"
+        }
+    ],
+    "variables": {
+        "name": "2012r2",
+        "disk_size": "20480",
+        "guest_os_type": "Windows2012_64",
+        "iso_checksum_retail": "865494e969704be1c4496d8614314361d025775e",
+        "iso_url_retail": "https://artifactory.davita.com/artifactory/win-binaries/en_windows_server_2012_r2_with_update_x64_dvd_6052708.iso",
+        "iso_checksum_eval": "849734f37346385dac2c101e4aacba4626bb141c",
+        "iso_url_eval": "http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO",
+        "iso_checksum_type": "sha1"
+    }
+}
